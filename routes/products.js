@@ -45,8 +45,30 @@ router.post('/', function(request, response){
 
   productInventory.push(productObject);
   console.log(productInventory);
+  response.send({'success':true});
   response.end();
 });
 
+router.put('/:id', function(request, response){
+
+  if((parseInt(request.params.id) > (productInventory.length-1))){
+    return response.send('id not found');
+  }
+
+  if(productInventory[parseInt(request.params.id)]  === null){
+    return response.send('ID is Null');
+  }
+
+
+
+
+  //id
+  //name
+
+
+
+  response.end();
+
+});
 
 module.exports = router;
