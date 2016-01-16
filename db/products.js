@@ -1,5 +1,5 @@
 var express = require('express');
 
-var array = [];
+var array = [{'name':'cars','price':199999, 'inventory':10}];
 
 module.exports = array;
