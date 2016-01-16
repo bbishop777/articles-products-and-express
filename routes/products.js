@@ -123,6 +123,7 @@ router.delete('/:id', function(request, response){
   }
 
   productInventory[request.params.id]=null;
+  response.send({'success': true});
 
   response.end();
 });
