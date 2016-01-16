@@ -112,4 +112,20 @@ router.put('/:id', function(request, response){
   response.end();
 });
 
+router.delete('/:id', function(request, response){
+  //this checks to see if the id exist
+  if((parseInt(request.params.id) > (productInventory.length-1))){
+    return response.send(false + ': ID not found');
+  }
+  //this checks to make sure the index isn't null
+  if(productInventory[parseInt(request.params.id)]  === null){
+    return response.send(false + ': ID is Null');
+  }
+
+  productInventory[request.params.id]=null;
+  response.send({'success': true});
+
+  response.end();
+});
+
 module.exports = router;
