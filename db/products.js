@@ -1,5 +1,5 @@
 var express = require('express');
 
-var array = [];
+var array = [null];
 
 module.exports = array;
