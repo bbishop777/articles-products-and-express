@@ -12,9 +12,6 @@ router.get('/', function(request, response){
 router.post('/', function(request, response){
   var postRequestValidation = ['name', 'price', 'inventory'];
 
-  // console.log(request.body);
-  // console.log(request.body.hasOwnProperty('name'));
-
   for(var i = 0; i < postRequestValidation.length ; i++){
     //here we are checking for all required keys for the POST
     if(!request.body.hasOwnProperty(postRequestValidation[i])){
@@ -50,25 +47,39 @@ router.post('/', function(request, response){
 });
 
 router.put('/:id', function(request, response){
-
+//Here we are checking if PUT request ID is actually an ID in our array
+//by looking at the length of array minus 1 (since ID's equal the position
+//in the array)
   if((parseInt(request.params.id) > (productInventory.length-1))){
     return response.send('id not found');
   }
-
+//Here we are checking to make sure someone has not deleted the information
+//at the position in the array making it null
   if(productInventory[parseInt(request.params.id)]  === null){
     return response.send('ID is Null');
   }
 
+  var putRequestValidation = ['name', 'id'];
+
+  for(var z = 0; z < putRequestValidation.length; z++) {
+    //Here we are checking to make sure they include a name and ID key
+    if(!request.body.hasOwnProperty(putRequestValidation[z])) {
+      return response.send(false + ' Missing name and ID keys');
+    }
 
 
+    //Here we are checking to make sure they have values for the the name and ID keys
+    if(request.body[putRequestValidation[z]].length === 0) {
+      return response.send(false + ' Missing values for ' + putRequestValidation[z]);
+    }
+  }
 
-  //id
-  //name
-
-
+  //Here we are checking to make sure the url ID matched ID in the client's PUT Request
+  if(parseInt(request.params.id) !== request.body.id) {
+    return response.send(false + ' Your url ID does not match your PUT ID');
+  }
 
   response.end();
-
 });
 
 module.exports = router;
