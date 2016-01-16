@@ -16,12 +16,22 @@ router.post('/', function(request, response){
   // console.log(request.body.hasOwnProperty('name'));
 
   for(var i = 0; i < postRequestValidation.length ; i++){
+    //here we are checking for all required keys for the POST
     if(!request.body.hasOwnProperty(postRequestValidation[i])){
       return response.send(false + ' needs to have name, price, and inventory keys');
     }
-
+    //here we are checking to make sure there is a value assigned to
+    //each key
     if(request.body[postRequestValidation[i] ].length === 0){
       return response.send(false + " missing " + postRequestValidation + 'value');
+    }
+  }
+
+    //here we are checking to make sure there are no duplicate values
+    //in our array
+  for (var x = 0; x < productInventory.length; x++) {
+    if(request.body.name === productInventory[x].name) {
+      return response.send(false + ' this product has already been posted');
     }
   }
 
