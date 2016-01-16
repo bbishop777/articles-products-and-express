@@ -1,17 +1,15 @@
 var express = require('express');
 var app = express();
 var productsRouter = require('./routes/products.js');
+var bodyParser = require('body-parser');
 var jade = require('jade');
 
 
+// middleware
 app.use(express.static('public'));
-
+app.use(bodyParser.urlencoded({extended:true}));
 app.set('views', '/templates');
 app.set('view engine', 'jade');
-
-
-
-// middleware
 app.use('/products', productsRouter);
 
 
