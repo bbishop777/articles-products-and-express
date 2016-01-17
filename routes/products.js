@@ -60,7 +60,7 @@ router.post('/', postValidation, function(request, response){
   productModule.add(productObject, function (err) {
     //if there is an error on the db side it will pass that error in with a message
     //to this function.  So on the db side a 'truthy' will be returned if errors
-    if(err) { //with a truthy this activates
+    if(err) { //with a truthy, this activates
 
       //here products.js on db side encountered an error and gave us back a message
       //which we put in our response.send below
@@ -83,28 +83,34 @@ router.post('/', postValidation, function(request, response){
 
 function putValidation(request, response, next){
 
-  //Here we are checking to make sure they include a name and ID key
+  //Here we are checking to make sure they include an ID key
   if(!request.body.hasOwnProperty('id')) {
-    return response.send(false + ': Missing name and ID keys');
+    return response.send(false + ': Missing ID key');
   }
 
-  //Here we are checking to make sure they have values for the the name and ID keys
+  //Here we are checking to make sure they have a value for the the ID key
   if(request.body.id.length === 0) {
     return response.send(false + ': Missing values for id');
   }
 
   for(var key in request.body){
+    //by now we have validated an ID # to edit so are checking for
+    //name, price, and inventory keys. Then checking for values to
+    //those keys
     if(key === 'name'){
+      //checking that there is a value
       if(request.body.name.length === 0) {
         return response.send(false + ': Missing values for name');
       }
     }
     if(key === 'price'){
+      //checking that there is a value
       if(request.body.price === undefined) {
         return response.send(false + ': Missing values for price');
       }
     }
     if(key === 'inventory'){
+      //checking that there is a value
       if(request.body.inventory === undefined) {
         return response.send(false + ': Missing values for inventory');
       }
@@ -129,16 +135,21 @@ function putValidation(request, response, next){
   next();
 }
 
+
 router.put('/:id', putValidation, function(request, response){
   var requestId = parseInt(request.params.id);
   //this checks to see if the request.body had any of the keys
 
+  //this is similar to POST passing in needed variables and a callback
+  //function that will define 'err' as either an error or null (truthy or
+  //falsey) on the db side
   productModule.editById(request.body,requestId, function(err){
     if(err) {
       return response.send({
         success: false,
         message: err.message
       });
+      //falsey return from callback function
     } else {
       var putChange = productModule.getById(requestId);
       return response.send({
@@ -149,19 +160,27 @@ router.put('/:id', putValidation, function(request, response){
   });
 });
 
-router.delete('/:id', function(request, response){
-  //this checks to see if the id exist
-  if((parseInt(request.params.id) > (productInventory.length-1))){
-    return response.send(false + ': ID not found');
-  }
-  //this checks to make sure the index isn't null
-  if(productInventory[parseInt(request.params.id)]  === null){
-    return response.send(false + ': ID is Null');
-  }
 
-  productInventory[request.params.id]=null;
-  response.send({'success': true});
 
+
+router.delete('/:id', function(request, response) {
+  var requestId = parseInt(request.params.id);
+console.log(requestId);
+  productModule.deleteProduct(requestId, function (err) {
+    if(err) {
+      return response.send({
+        success: fail,
+        message: err.message
+      });
+
+    } else {
+      var deleteChange = productModule.getById(requestId);
+      return response.send({
+        success: true,
+        result: deleteChange
+      });
+    }
+  });
 });
 
 module.exports = router;
