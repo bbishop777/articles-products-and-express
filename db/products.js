@@ -1,5 +1,5 @@
 module.exports = (function () {
-  var productArray = [{name: 'kai',price:55, id:0, inventory:1}];
+  var productArray = [{name: 'kai',price:55, id:0, inventory:1}, {name: 'brad', price: 100, id: 1}];
 
 
   function _add(productObject, callback) {
