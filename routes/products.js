@@ -1,15 +1,17 @@
 var express = require('express');
 var fs = require('fs');
 var router = express.Router();
-var productInventory = require('./../db/products.js');
+var productModule = require('./../db/products.js');
 var idCounter = 0;
 
 router.get('/', function(request, response){
   response.send('aloha');
-  response.end();
 });
 
-router.post('/', function(request, response){
+//Middleware for our POST request
+function postValidation(request, response, next) {
+
+
   var postRequestValidation = ['name', 'price', 'inventory'];
 
   for(var i = 0; i < postRequestValidation.length ; i++){
@@ -23,16 +25,6 @@ router.post('/', function(request, response){
       return response.send(false + ": missing " + postRequestValidation + 'value');
     }
   }
-  var nan = NaN;
-  var nanString = nan.toString();
-
-  // console.log(typeof request.body.price);
-  // console.log(nan);
-  // console.log(typeof nan + ' this is the typeof nan');
-  // console.log(nanString);
-  // console.log(typeof nanString + ' this is the typeof nanString');
-
-  // console.log(typeof parseInt(request.body.price)+ ' this is after parseInt');
 
   //this validates that request.body.price is a number
   if(isNaN(parseInt(request.body.price))){
@@ -42,27 +34,49 @@ router.post('/', function(request, response){
   if(isNaN(parseInt(request.body.inventory))){
     return response.send(false + ': inventory needs to be a number');
   }
+  //If everything is 'good'
+  next();
+}
 
-    //here we are checking to make sure there are no duplicate values
-    //in our array
-  for (var x = 0; x < productInventory.length; x++) {
-    if(request.body.name === productInventory[x].name) {
-      return response.send(false + ': this product has already been posted');
-    }
-  }
-
-  var productObject = { 'name': request.body.name ,
-                        'price' : parseInt(request.body.price) ,
-                        'inventory': parseInt(request.body.inventory) ,
-                        'id' : idCounter
-                        };
+//here is our POST, first calls Middleware 'postValidation'
+router.post('/', postValidation, function(request, response){
+  //After getting thru validation we buid the object to return to the
+  //database.  We also increment the counter for the next ID
+  var productObject = {
+    'name': request.body.name ,
+    'price' : parseInt(request.body.price) ,
+    'inventory': parseInt(request.body.inventory) ,
+    'id' : idCounter
+  };
 
   idCounter++;
 
-  productInventory.push(productObject);
-  console.log(productInventory);
-  response.send({'success':true});
-  response.end();
+//Here we call on the module we brought in from the products.js db
+//We pass in the productObject (an object we created)and a callback function which we pass in
+// 'err' as a variable that will be defined as either a new Error or as null
+// in db.
+  productModule.add(productObject, function (err) {
+//if there is an error on the db side it will pass that error in with a message
+//to this function.  So on the db side a 'truthy' will be returned if errors
+    if(err) { //with a truthy this activates
+
+      //here products.js on db side encountered an error and gave us back a message
+      //which we put in our response.send below
+      return response.send({
+        success: false,
+        message: err.message
+      });
+
+      //here the db side invoked the callback function passing in null, giving a
+      //falsy activated the else below
+    } else {
+      var postResults = productModule.getAll();
+      response.send({
+        success :true,
+        result: postResults
+      });
+    }
+  });
 });
 
 router.put('/:id', function(request, response){
@@ -108,8 +122,6 @@ router.put('/:id', function(request, response){
     }
 
   }
-
-  response.end();
 });
 
 router.delete('/:id', function(request, response){
@@ -125,7 +137,6 @@ router.delete('/:id', function(request, response){
   productInventory[request.params.id]=null;
   response.send({'success': true});
 
-  response.end();
 });
 
 module.exports = router;
