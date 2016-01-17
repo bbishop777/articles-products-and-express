@@ -5,8 +5,10 @@ var productModule = require('./../db/products.js');
 var idCounter = 0;
 
 router.get('/', function(request, response){
+  response.render('products/index', {
+    'products': productModule.getAll()
+  });
   console.log(productModule.getAll().length);
-  response.send('aloha');
 
 });
 
@@ -161,7 +163,12 @@ router.put('/:id', putValidation, function(request, response){
 
 router.delete('/:id', function(request, response) {
   var requestId = parseInt(request.params.id);
+
   console.log(requestId);
+
+  //calls deleteProduct function in our db, passes ID # and cb func
+  //see other routes for explanation of err/truthy & null/falsey
+
   productModule.deleteProduct(requestId, function (err) {
     if(err) {
       return response.send({
@@ -169,7 +176,8 @@ router.delete('/:id', function(request, response) {
         message: err.message
       });
 
-    } else {
+    } else { //if this callback function returns falsey to error then returns
+      //success with what the id# now show (null)
       var deleteChange = productModule.getById(requestId);
       return response.send({
         success: true,

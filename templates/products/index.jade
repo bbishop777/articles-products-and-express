@@ -1,0 +1,11 @@
+extends ./../layout
+
+block content
+  ul
+    each goodie in products
+      div.goodieContainer
+        h4 #{goodie.name}
+        ul
+          li #{goodie.price}
+          li #{goodie.inventory}
+          li #{goodie.id}
