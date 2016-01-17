@@ -75,6 +75,7 @@ module.exports = (function () {
   }
 
 //all the methods we are exposing/exporting on our productModule
+
   return {
     add: _add,
     getAll: _getAll,

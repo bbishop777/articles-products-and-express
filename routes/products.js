@@ -135,7 +135,6 @@ function putValidation(request, response, next){
   next();
 }
 
-
 router.put('/:id', putValidation, function(request, response){
   var requestId = parseInt(request.params.id);
   //this checks to see if the request.body had any of the keys
@@ -160,12 +159,9 @@ router.put('/:id', putValidation, function(request, response){
   });
 });
 
-
-
-
 router.delete('/:id', function(request, response) {
   var requestId = parseInt(request.params.id);
-console.log(requestId);
+  console.log(requestId);
   productModule.deleteProduct(requestId, function (err) {
     if(err) {
       return response.send({
