@@ -6,9 +6,18 @@ var idCounter = 0;
 
 router.get('/', function(request, response){
   response.render('products/index', {
-    'products': productModule.getAll()
+    products: productModule.getAll()
   });
   console.log(productModule.getAll().length);
+
+});
+
+router.get('/:id', function(request, response){
+  var requestId = parseInt(request.params.id);
+  console.log(requestId);
+  response.render('products/individualProdPage', {
+    products: productModule.getById(requestId)
+  });
 
 });
 

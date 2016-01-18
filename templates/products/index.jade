@@ -2,5 +2,10 @@ extends ./../layout
 
 block content
   ul
-    each goodie in products
-      li #{goodie.name}
+    each product in products
+      li Product Name:&nbsp
+        a(href='/products/#{product.id}') #{product.name}
+      //- li #{product.name}
+      //- li #{product.price}
+      //- li #{product.inventory}
+      //- li #{product.id}
