@@ -15,10 +15,18 @@ router.get('/', function(request, response){
 router.get('/:id', function(request, response){
   var requestId = parseInt(request.params.id);
   console.log(requestId);
-  response.render('products/individualProdPage', {
-    products: productModule.getById(requestId)
+  response.render('products/show', {
+    product: productModule.getById(requestId)
   });
 
+});
+
+router.get('/:id/edit', function(request, response) {
+  console.log('We are at Edit', request.url);
+  var requestId = parseInt(request.params.id);
+  response.render('products/edit', {
+    product: productModule.getById(requestId)
+  });
 });
 
 //Middleware for our POST request
