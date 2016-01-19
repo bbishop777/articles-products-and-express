@@ -166,6 +166,7 @@ function putValidation(request, response, next){
 }
 
 router.put('/:id/edit', putValidation, function(request, response){
+  console.log(request.body);
   var requestId = parseInt(request.params.id);
   request.body.id = requestId;
   //this checks to see if the request.body had any of the keys
