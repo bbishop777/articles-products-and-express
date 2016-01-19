@@ -4,6 +4,6 @@ block content
   each product in products
     ul
       li Product Name:&nbsp;
-        //- a(href='/products/#{product.id}') #{product.name}
+        a(href='/products/#{product.id}') #{product.name}
       li &nbsp;
         a(href='products/#{product.id}/edit') Edit
