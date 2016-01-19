@@ -11,6 +11,7 @@ app.use(bodyParser.urlencoded({extended:true}));
 
 app.set('views', './templates');
 app.set('view engine', 'jade');
+console.log(app.get('view engine'));
 app.use('/products', productsRouter);
 
 
