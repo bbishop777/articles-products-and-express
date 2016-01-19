@@ -1,0 +1,18 @@
+extends ./../layout
+
+block content
+  form#newForm(method='POST')
+    ul
+      li
+        | Product Name:&nbsp
+        input(type='text', name='name')
+        br
+      li
+        | Product Inventory:&nbsp
+        input(type='text', name='inventory')
+        br
+      li
+        | Product Price:&nbsp
+        input(type='text', name='price')
+        br
+    input(type='submit' value='Submit Product')
