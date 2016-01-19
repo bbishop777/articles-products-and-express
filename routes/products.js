@@ -4,7 +4,8 @@ var router = express.Router();
 //don't need ./../db jus ../db/products also no .js needed. Express knows.
 //could also capitalize productModule to make it look like a class
 var productModule = require('./../db/products.js');
-var idCounter = 0;
+var idCounter = productModule.getAll().length - 1;
+idCounter++;
 
 router.get('/', function(request, response){
   response.render('products/index', {
@@ -12,6 +13,10 @@ router.get('/', function(request, response){
   });
   console.log(productModule.getAll().length);
 
+});
+
+router.get('/new', function(request, response){
+  return response.render('products/new');
 });
 
 router.get('/:id', function(request, response){
@@ -31,6 +36,7 @@ router.get('/:id/edit', function(request, response) {
   });
 });
 
+
 //Middleware for our POST request
 function postValidation(request, response, next) {
 
@@ -38,6 +44,7 @@ function postValidation(request, response, next) {
   var postRequestValidation = ['name', 'price', 'inventory'];
 
   for(var i = 0; i < postRequestValidation.length ; i++){
+
     //here we are checking for all required keys for the POST
     if(!request.body.hasOwnProperty(postRequestValidation[i])){
       return response.send(false + ': needs to have name, price, and inventory keys');
@@ -62,7 +69,7 @@ function postValidation(request, response, next) {
 }
 
 //here is our POST, first calls Middleware 'postValidation'
-router.post('/', postValidation, function(request, response){
+router.post('/new', postValidation, function(request, response){
   //After getting thru validation we buid the object to return to the
   //database.  We also increment the counter for the next ID
   var productObject = {
@@ -71,6 +78,8 @@ router.post('/', postValidation, function(request, response){
     'inventory': parseInt(request.body.inventory) ,
     'id' : idCounter
   };
+
+
 
   idCounter++;
 
@@ -156,7 +165,6 @@ function putValidation(request, response, next){
   next();
 }
 
-
 router.put('/:id', putValidation, function(request, response){
   var requestId = parseInt(request.params.id);
   //this checks to see if the request.body had any of the keys
@@ -181,13 +189,14 @@ router.put('/:id', putValidation, function(request, response){
   });
 });
 
-
-
-
 router.delete('/:id', function(request, response) {
   var requestId = parseInt(request.params.id);
+
+  console.log(requestId);
+
   //calls deleteProduct function in our db, passes ID # and cb func
   //see other routes for explanation of err/truthy & null/falsey
+
   productModule.deleteProduct(requestId, function (err) {
     if(err) {
       return response.send({
