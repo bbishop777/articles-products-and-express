@@ -191,8 +191,6 @@ router.put('/:id/edit', putValidation, function(request, response){
 router.delete('/:id', function(request, response) {
   var requestId = parseInt(request.params.id);
 
-  console.log(request.body,"heeeerreeee????");
-
   //calls deleteProduct function in our db, passes ID # and cb func
   //see other routes for explanation of err/truthy & null/falsey
 

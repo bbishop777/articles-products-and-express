@@ -19,9 +19,13 @@ module.exports = (function () {
   function _add(productObject, callback) {
     //here we are checking to make sure there are no duplicate values
     //in our array
-    for (var x = 0; x < productArray.length; x++) {
+    var filterProdArray = productArray.filter(function(product) {
+      return (product !== null);
+    });
 
-      if(productObject.name === productArray[x].name) {
+    for (var x = 0; x < filterProdArray.length; x++) {
+
+      if(productObject.name === filterProdArray[x].name) {
         return callback(new Error(': this product has already been posted'));
       }
     }
