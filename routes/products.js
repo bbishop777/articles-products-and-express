@@ -14,6 +14,10 @@ router.get('/', function(request, response){
 
 });
 
+router.get('/new', function(request, response){
+  return response.render('products/new');
+});
+
 router.get('/:id', function(request, response){
   var requestId = parseInt(request.params.id);
   //needs return put before all response.render in routes
@@ -30,6 +34,7 @@ router.get('/:id/edit', function(request, response) {
     product: productModule.getById(requestId)
   });
 });
+
 
 //Middleware for our POST request
 function postValidation(request, response, next) {
