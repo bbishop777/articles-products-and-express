@@ -1,0 +1,6 @@
+extends ./../layout
+
+block content
+  form#deleteForm(method='POST')
+    input(type='hidden', name='_method', value='DELETE')
+    input(type='submit' value='Delete Product')

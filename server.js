@@ -9,7 +9,7 @@ var methodOverride = require('method-override');
 app.use(express.static('public'));
 app.use(bodyParser.urlencoded({extended:true}));
 app.use(methodOverride(function(request,response){
-  if (request.body && typeof request.body === 'object' && '_method' in request.body){
+  if ((request.body) && (typeof request.body === 'object') && ('_method' in request.body)){
     var method = request.body._method;
     delete request.body._method;
     return method;

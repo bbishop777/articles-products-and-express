@@ -32,7 +32,18 @@ module.exports = (function () {
 
 //returns everything in the productArray when called
   function _getAll() {
-    return productArray;
+    //here we are filtering out the Null in the array because when we ran
+    //a Delete request it erase the object and puts null in its place.  Then
+    //Jade tries to render the index page again but doesn't know what to do with
+    //null
+    var filterProdArray = productArray.filter(function (product) {
+      //filter goes thru each product in productArray and asks if it is 'not'
+      //null. For every item that is not null it returns true.
+      return (product !== null);
+    });
+    //filter puts all 'true' items in an array which is saved in line 39
+    //as filterProdArray and returned below
+    return filterProdArray;
   }
 
   function _editById(requestBody, requestId, callback){

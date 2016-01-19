@@ -166,7 +166,6 @@ function putValidation(request, response, next){
 }
 
 router.put('/:id/edit', putValidation, function(request, response){
-  console.log(request.body);
   var requestId = parseInt(request.params.id);
   request.body.id = requestId;
   //this checks to see if the request.body had any of the keys
@@ -194,7 +193,7 @@ router.put('/:id/edit', putValidation, function(request, response){
 router.delete('/:id', function(request, response) {
   var requestId = parseInt(request.params.id);
 
-  console.log(requestId);
+  console.log(request.body,"heeeerreeee????");
 
   //calls deleteProduct function in our db, passes ID # and cb func
   //see other routes for explanation of err/truthy & null/falsey
@@ -208,10 +207,10 @@ router.delete('/:id', function(request, response) {
 
     } else { //if this callback function returns falsey to error then returns
       //success with what the id# now show (null)
-      var deleteChange = productModule.getById(requestId);
-      return response.send({
-        success: true,
-        result: deleteChange
+      //var deleteChange = productModule.getById(requestId);
+      console.log(productModule.getAll());
+      return response.render('products/index', {
+        products: productModule.getAll()
       });
     }
   });
