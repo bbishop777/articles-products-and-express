@@ -114,15 +114,15 @@ router.post('/new', postValidation, function(request, response){
 
 function putValidation(request, response, next){
 
-  //Here we are checking to make sure they include an ID key
-  if(!request.body.hasOwnProperty('id')) {
-    return response.send(false + ': Missing ID key');
-  }
+  // // Here we are checking to make sure they include an ID key
+  // if(!request.body.hasOwnProperty('id')) {
+  //   return response.send(false + ': Missing ID key');
+  // }
 
-  //Here we are checking to make sure they have a value for the the ID key
-  if(request.body.id.length === 0) {
-    return response.send(false + ': Missing values for id');
-  }
+  // //Here we are checking to make sure they have a value for the the ID key
+  // if(request.body.id.length === 0) {
+  //   return response.send(false + ': Missing values for id');
+  // }
 
   for(var key in request.body){
     //by now we have validated an ID # to edit so are checking for
@@ -157,17 +157,18 @@ function putValidation(request, response, next){
     return response.send(false + ': inventory needs to be a number');
   }
 
-  //Here we are checking to make sure the url ID matched ID in the client's PUT Request
-  if(parseInt(request.params.id) !== parseInt(request.body.id)) {
-    return response.send(false + ': Your url ID does not match your PUT ID');
-  }
+  // //Here we are checking to make sure the url ID matched ID in the client's PUT Request
+  // if(parseInt(request.params.id) !== parseInt(request.body.id)) {
+  //   return response.send(false + ': Your url ID does not match your PUT ID');
+  // }
 
 
   next();
 }
 
-router.put('/:id', putValidation, function(request, response){
+router.put('/:id/edit', putValidation, function(request, response){
   var requestId = parseInt(request.params.id);
+  request.body.id = requestId;
   //this checks to see if the request.body had any of the keys
 
   //this is similar to POST passing in needed variables and a callback

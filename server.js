@@ -2,12 +2,19 @@ var express = require('express');
 var app = express();
 var productsRouter = require('./routes/products.js');
 var bodyParser = require('body-parser');
-var methodOverride = require('express-method-override');
+var methodOverride = require('method-override');
 
 
 // middleware
 app.use(express.static('public'));
 app.use(bodyParser.urlencoded({extended:true}));
+app.use(methodOverride(function(request,response){
+  if (request.body && typeof request.body === 'object' && '_method' in request.body){
+    var method = request.body._method;
+    delete request.body._method;
+    return method;
+  }
+}));
 
 app.set('views', './templates');
 app.set('view engine', 'jade');
