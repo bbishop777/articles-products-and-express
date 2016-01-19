@@ -2,11 +2,13 @@ var express = require('express');
 var app = express();
 var productsRouter = require('./routes/products.js');
 var bodyParser = require('body-parser');
+var methodOverride = require('express-method-override');
 
 
 // middleware
 app.use(express.static('public'));
 app.use(bodyParser.urlencoded({extended:true}));
+
 app.set('views', './templates');
 app.set('view engine', 'jade');
 app.use('/products', productsRouter);

@@ -1,7 +1,8 @@
 extends ./../layout
 
 block content
-  form#editForm
+  form#editForm(method='POST')
+    input(type='hidden', name='_method', value='PUT')
     ul
       li
         | Product Name:&nbsp
@@ -15,5 +16,4 @@ block content
         | Product Price:&nbsp
         input(type='text', name='pPrice', value='#{product.price}')
         br
-      li &nbsp;
-        a(href='products/#{product.id}/edit') Submit
+    input(type='submit' value='Submit Product')

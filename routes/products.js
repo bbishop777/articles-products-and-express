@@ -31,6 +31,7 @@ router.get('/:id', function(request, response){
 router.get('/:id/edit', function(request, response) {
   console.log('We are at Edit', request.url);
   var requestId = parseInt(request.params.id);
+  console.log(request.body);
   return response.render('products/edit', {
     product: productModule.getById(requestId)
   });
