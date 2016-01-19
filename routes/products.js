@@ -1,6 +1,8 @@
 var express = require('express');
 var fs = require('fs');
 var router = express.Router();
+//don't need ./../db jus ../db/products also no .js needed. Express knows.
+//could also capitalize productModule to make it look like a class
 var productModule = require('./../db/products.js');
 var idCounter = 0;
 
@@ -14,11 +16,19 @@ router.get('/', function(request, response){
 
 router.get('/:id', function(request, response){
   var requestId = parseInt(request.params.id);
-  console.log(requestId);
-  response.render('products/individualProdPage', {
-    products: productModule.getById(requestId)
+  //needs return put before all response.render in routes
+  return response.render('products/show', {
+    product: productModule.getById(requestId)
   });
 
+});
+
+router.get('/:id/edit', function(request, response) {
+  console.log('We are at Edit', request.url);
+  var requestId = parseInt(request.params.id);
+  return response.render('products/edit', {
+    product: productModule.getById(requestId)
+  });
 });
 
 //Middleware for our POST request
@@ -84,7 +94,7 @@ router.post('/', postValidation, function(request, response){
       //falsy activated the else below
     } else {
       var postResults = productModule.getAll();
-      response.send({
+      return response.send({
         success :true,
         result: postResults
       });

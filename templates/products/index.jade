@@ -1,11 +1,10 @@
 extends ./../layout
 
 block content
-  ul
-    each product in products
-      li Product Name:&nbsp
+  each product in products
+    ul
+      li Product Name:&nbsp;
         a(href='/products/#{product.id}') #{product.name}
-      //- li #{product.name}
-      //- li #{product.price}
-      //- li #{product.inventory}
-      //- li #{product.id}
+      li &nbsp;
+        a(href='products/#{product.id}/edit') Edit
+

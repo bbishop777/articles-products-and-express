@@ -1,0 +1,19 @@
+extends ./../layout
+
+block content
+  form#editForm
+    ul
+      li
+        | Product Name:&nbsp
+        input(type='text', name='pName', value='#{product.name}')
+        br
+      li
+        | Product Inventory:&nbsp
+        input(type='text', name='pInventory', value='#{product.inventory}')
+        br
+      li
+        | Product Price:&nbsp
+        input(type='text', name='pPrice', value='#{product.price}')
+        br
+      li &nbsp;
+        a(href='products/#{product.id}/edit') Submit
