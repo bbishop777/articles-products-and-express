@@ -36,6 +36,7 @@ module.exports = (function () {
   }
 
   function _editById(requestBody, requestId, callback){
+
     //Here we are checking to make sure someone has not deleted the information
     //at the position in the array making it null
     if(productArray[requestId]  === null){
