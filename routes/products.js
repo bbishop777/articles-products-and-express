@@ -43,6 +43,7 @@ function postValidation(request, response, next) {
   var postRequestValidation = ['name', 'price', 'inventory'];
 
   for(var i = 0; i < postRequestValidation.length ; i++){
+
     //here we are checking for all required keys for the POST
     if(!request.body.hasOwnProperty(postRequestValidation[i])){
       return response.send(false + ': needs to have name, price, and inventory keys');
@@ -67,7 +68,7 @@ function postValidation(request, response, next) {
 }
 
 //here is our POST, first calls Middleware 'postValidation'
-router.post('/', postValidation, function(request, response){
+router.post('/new', postValidation, function(request, response){
   //After getting thru validation we buid the object to return to the
   //database.  We also increment the counter for the next ID
   var productObject = {
@@ -76,6 +77,8 @@ router.post('/', postValidation, function(request, response){
     'inventory': parseInt(request.body.inventory) ,
     'id' : idCounter
   };
+
+
 
   idCounter++;
 

@@ -1,18 +1,18 @@
 extends ./../layout
 
 block content
-  form#newForm
+  form#newForm(method='POST')
     ul
       li
         | Product Name:&nbsp
-        input(type='text', name='pName')
+        input(type='text', name='name')
         br
       li
         | Product Inventory:&nbsp
-        input(type='text', name='pInventory')
+        input(type='text', name='inventory')
         br
       li
         | Product Price:&nbsp
-        input(type='text', name='pPrice')
+        input(type='text', name='price')
         br
-      li &nbsp; Submit
+    input(type='submit' value='Submit Product')
