@@ -103,9 +103,8 @@ router.post('/new', postValidation, function(request, response){
       //falsy activated the else below
     } else {
       var postResults = productModule.getAll();
-      return response.send({
-        success :true,
-        result: postResults
+      return response.render('products/index', {
+        products: productModule.getAll()
       });
     }
   });
@@ -182,9 +181,8 @@ router.put('/:id/edit', putValidation, function(request, response){
       //falsey return from callback function
     } else {
       var putChange = productModule.getById(requestId);
-      return response.send({
-        success: true,
-        result: putChange
+      return response.render('products/index', {
+        products: productModule.getAll()
       });
     }
   });
@@ -208,7 +206,6 @@ router.delete('/:id', function(request, response) {
     } else { //if this callback function returns falsey to error then returns
       //success with what the id# now show (null)
       //var deleteChange = productModule.getById(requestId);
-      console.log(productModule.getAll());
       return response.render('products/index', {
         products: productModule.getAll()
       });
