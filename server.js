@@ -1,6 +1,7 @@
 var express = require('express');
 var app = express();
 var productsRouter = require('./routes/products.js');
+var arcticlesRouter = require('./routes/articles.js');
 var bodyParser = require('body-parser');
 var methodOverride = require('method-override');
 
@@ -20,6 +21,8 @@ app.set('views', './templates');
 app.set('view engine', 'jade');
 console.log(app.get('view engine'));
 app.use('/products', productsRouter);
+app.use('/articles', arcticlesRouter);
+
 
 
 app.get('/',function(request,response){

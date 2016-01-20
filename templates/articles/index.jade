@@ -1,0 +1,16 @@
+extends ./../layout
+
+block content
+  each article in articles
+    ul
+      li Product Name:&nbsp;
+        a(href='/articles/#{article.urlTitle}') #{article.title}
+      li &nbsp;
+        a(href='/articles/#{article.urlTitle}/edit') Edit
+      li &nbsp;
+        form#deleteArticleForm(method='POST', action='/articles/#{article.urlTitle}')
+          input(type='hidden', name='_method', value='DELETE')
+          input(type='submit', value='Delete article')
+        //- a.btn(href='/articles/#{article.urlTitle}') Delete
+        //- form#deleteForm(action=“/articles/#{article.urlTitle}?_method=DELETE", method="POST")
+  a.btn(href='/articles/new') New
