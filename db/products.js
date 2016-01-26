@@ -84,22 +84,26 @@ var db = pgp(cn);
   function _add(productObject, callback) {
     //here we are checking to make sure there are no duplicate values
     //in our array
-    var filterProdArray = productArray.filter(function(product) {
-      return (product !== null);
-    });
+    // var filterProdArray = productArray.filter(function(product) {
+    //   return (product !== null);
+    // });
 
-    for (var x = 0; x < filterProdArray.length; x++) {
-
-      if(productObject.name === filterProdArray[x].name) {
+    var dataAll = _getAll();
+    for (var x = 0; x < dataAll.length; x++) {
+      if(productObject.name === dataAll[x].name) {
         return callback(new Error(': this product has already been posted'));
       }
     }
-
-    productArray.push(productObject);
-    callback(null);
+    return new promise(function(resolve, reject) {
+      db.one("insert into products (id, name, price, inventory) values(default, $1, $2, $3) returning id",
+      [productObject.name, productObject.price, productObject.inventory])
+      .then()
+      .catch(function (error) {
+          console.log("ERROR:", error); // print error;
+      });
+  });
   }
 
-//returns everything in the productArray when called
   function _getAll() {
     return new promise(function(resolve, reject) {
 

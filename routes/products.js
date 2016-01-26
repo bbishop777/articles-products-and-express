@@ -80,19 +80,11 @@ function postValidation(request, response, next) {
 
 //here is our POST, first calls Middleware 'postValidation'
 router.post('/new', postValidation, function(request, response){
-  //After getting thru validation we buid the object to return to the
-  //database.  We also increment the counter for the next ID
   var productObject = {
     'name': request.body.name ,
     'price' : parseInt(request.body.price) ,
-    'inventory': parseInt(request.body.inventory) ,
-    'id' : idCounter
+    'inventory': parseInt(request.body.inventory)
   };
-
-
-
-  idCounter++;
-
   //Here we call on the module we brought in from the products.js db
   //We pass in the productObject (an object we created)and a callback function which we pass in
   // 'err' as a variable that will be defined as either a new Error or as null
@@ -112,11 +104,14 @@ router.post('/new', postValidation, function(request, response){
       //here the db side invoked the callback function passing in null, giving a
       //falsy activated the else below
     } else {
-      var postResults = productModule.getAll();
-      return response.render('products/index', {
-        products: productModule.getAll()
-      });
-    }
+        console.log('Are you here?');
+        response.redirect('/products');
+       // productModule.getAll()
+       //  .then(function(data) {
+       //    response.render('products/index', {
+       //      products: data
+       //    });
+      }
   });
 });
 
