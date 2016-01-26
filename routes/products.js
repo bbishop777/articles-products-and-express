@@ -8,14 +8,14 @@ productModule.getAll().then(function(data) {
 
 });
 
-// var idCounter = console.log(productModule.getAll(), "yeeeeee");
+// var idCounter = productModule.getAll().length-1;
 // idCounter++;
 
 router.get('/', function(request, response){
   response.render('products/index', {
-    products: productModule.getAll()
+    products: productModule.getAll().then(function(data) {
+    })
   });
-  console.log(productModule.getAll().length);
 
 });
 
