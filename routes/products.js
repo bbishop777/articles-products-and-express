@@ -4,8 +4,12 @@ var router = express.Router();
 //don't need ./../db jus ../db/products also no .js needed. Express knows.
 //could also capitalize productModule to make it look like a class
 var productModule = require('./../db/products.js');
-var idCounter = productModule.getAll().length - 1;
-idCounter++;
+productModule.getAll().then(function(data) {
+
+});
+
+// var idCounter = console.log(productModule.getAll(), "yeeeeee");
+// idCounter++;
 
 router.get('/', function(request, response){
   response.render('products/index', {

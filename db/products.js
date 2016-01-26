@@ -1,19 +1,84 @@
 module.exports = (function () {
 
-  var productArray = [
-    {
-      name: 'kai',
-      price:55,
-      id:0,
-      inventory:1
-    },
-    {
-      name: 'brad',
-      price: 100,
-      inventory: 110,
-      id: 1
-    }
-  ];
+  // var productArray
+  // = [
+  //   {
+  //     name: 'kai',
+  //     price:55,
+  //     id:0,
+  //     inventory:1
+  //   },
+  //   {
+  //     name: 'brad',
+  //     price: 100,
+  //     inventory: 110,
+  //     id: 1
+  //   }
+  // ];
+var fs = require('fs');
+//require Bluebird for promises
+var promise = require('bluebird');
+
+var options = {
+  promiseLib: promise //overiding the default promise library with Bluebird. So making sure PG Promise will use Bluebird
+};
+
+//require PG Promise allows us to use Postgresql commands in express
+//'require' returns the function in the first set of parenthises as a function.  The second set of parenthises
+//invokes this returned function with whatever is in the second set of parenthises as the argument.  This can be seen
+//with with other requires Ex:
+//var express = require('express');
+//var app = express();
+//This could be written as:
+//var express = require('express')();
+var pgp = require('pg-promise')(options); //options calls the object above setting
+//configure database connection
+var cn = {
+  host: 'localhost', //default server name
+  port : 5432,
+  database : 'articles_n_products', //database you are connecting to.  Change this when starting project
+  user : 'bradbishop'
+};
+
+//create a new db in memory
+var db = pgp(cn);
+
+// db.query("select * from users", true)
+//     .then(function (data) {
+//         // success;
+//         console.log(data);
+//     })
+//     .catch(function (error) {
+//         // error;
+//     });
+
+//sample insert
+// db.one("insert into users(id, username, first_name, last_name) values(default, $1, $2, $3) returning id",
+//     ['studmuffin8', 'Pete', 'Wingding'])
+//     .then(function (data) {
+//         console.log(data.id); // print new user id;
+//     })
+//     .catch(function (error) {
+//         console.log("ERROR:", error); // print error;
+//     });
+// //
+//     db.query("select count(*) from users", true)
+//     .then(function (data) {
+//         // success;
+//         console.log(data);
+//     })
+//     .catch(function (error) {
+//         // error;
+//     });
+//
+
+// db.result("delete from users where id = 50003", false)
+//     .then(function (result) {
+//         console.log(result.rowCount); // print how many records were deleted;
+//     })
+//     .catch(function (error) {
+//         console.log("ERROR:", reason); // print error;
+//     });
 
 
   function _add(productObject, callback) {
@@ -36,19 +101,32 @@ module.exports = (function () {
 
 //returns everything in the productArray when called
   function _getAll() {
+    return new promise(function(resolve, reject) {
+
+    db.query("select * from products", true)
+    .then(function (data) {
+        // success;
+        resolve( data );
+      });
+    })
+    .catch(function (error) {
+        // error;
+        reject(error);
+    });
+  }
     //here we are filtering out the Null in the array because when we ran
     //a Delete request it erase the object and puts null in its place.  Then
     //Jade tries to render the index page again but doesn't know what to do with
     //null
-    var filterProdArray = productArray.filter(function (product) {
+    // var filterProdArray = productArray.filter(function (product) {
       //filter goes thru each product in productArray and asks if it is 'not'
       //null. For every item that is not null it returns true.
-      return (product !== null);
-    });
+      // return (product !== null);
+    // });
     //filter puts all 'true' items in an array which is saved in line 39
     //as filterProdArray and returned below
-    return filterProdArray;
-  }
+    // return filterProdArray;
+  // }
 
   function _editById(requestBody, requestId, callback){
 
