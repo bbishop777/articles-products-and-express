@@ -163,7 +163,20 @@ var db = pgp(cn);
   }
 
   function _getById(requestId){
-    return productArray[requestId];
+    return new promise(function(resolve, reject) {
+
+    db.query("select * from products where id = " + requestId, true)
+    .then(function (data) {
+        // success;
+        console.log(data, 'HEEEEYYy');
+        console.log(typeof data, "THeeeere!");
+        resolve( data );
+      });
+    })
+    .catch(function (error) {
+        // error;
+        reject(error);
+    });
   }
 
   function _deleteProduct(requestId, callback) {

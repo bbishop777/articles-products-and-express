@@ -12,11 +12,16 @@ productModule.getAll().then(function(data) {
 // idCounter++;
 
 router.get('/', function(request, response){
-  response.render('products/index', {
-    products: productModule.getAll().then(function(data) {
+  productModule.getAll()
+    .then(function(data) {
+      response.render('products/index', {
+        products: data
+      });
     })
-  });
-
+    .catch(function (error) {
+      // error;
+      reject(error);
+    });
 });
 
 router.get('/new', function(request, response){
@@ -25,11 +30,12 @@ router.get('/new', function(request, response){
 
 router.get('/:id', function(request, response){
   var requestId = parseInt(request.params.id);
-  //needs return put before all response.render in routes
-  return response.render('products/show', {
-    product: productModule.getById(requestId)
-  });
-
+    productModule.getById(requestId)
+      .then(function(data) {
+        response.render('products/show', {
+          product: data[0]
+        });
+      });
 });
 
 router.get('/:id/edit', function(request, response) {
