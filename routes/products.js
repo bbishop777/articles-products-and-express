@@ -1,15 +1,11 @@
 var express = require('express');
 var fs = require('fs');
 var router = express.Router();
-//don't need ./../db jus ../db/products also no .js needed. Express knows.
 //could also capitalize productModule to make it look like a class
 var productModule = require('./../db/products.js');
 productModule.getAll().then(function(data) {
 
 });
-
-// var idCounter = productModule.getAll().length-1;
-// idCounter++;
 
 router.get('/', function(request, response){
   productModule.getAll()
@@ -99,10 +95,6 @@ router.post('/new', postValidation, function(request, response){
     'price' : parseInt(request.body.price) ,
     'inventory': parseInt(request.body.inventory)
   };
-  //Here we call on the module we brought in from the products.js db
-  //We pass in the productObject (an object we created)and a callback function which we pass in
-  // 'err' as a variable that will be defined as either a new Error or as null
-  // in db.
   productModule.add(productObject)
   .then(function() {
     response.redirect('/products');
@@ -117,19 +109,8 @@ router.post('/new', postValidation, function(request, response){
 
 
 function putValidation(request, response, next){
-
-  // // Here we are checking to make sure they include an ID key
-  // if(!request.body.hasOwnProperty('id')) {
-  //   return response.send(false + ': Missing ID key');
-  // }
-
-  // //Here we are checking to make sure they have a value for the the ID key
-  // if(request.body.id.length === 0) {
-  //   return response.send(false + ': Missing values for id');
-  // }
-
   for(var key in request.body){
-    //by now we have validated an ID # to edit so are checking for
+    //are checking for
     //name, price, and inventory keys. Then checking for values to
     //those keys
     if(key === 'name'){
@@ -160,32 +141,15 @@ function putValidation(request, response, next){
   if(isNaN(parseInt(request.body.inventory))){
     return response.send(false + ': inventory needs to be a number');
   }
-
-  // //Here we are checking to make sure the url ID matched ID in the client's PUT Request
-  // if(parseInt(request.params.id) !== parseInt(request.body.id)) {
-  //   return response.send(false + ': Your url ID does not match your PUT ID');
-  // }
-
-
   next();
 }
 
 router.put('/:id/edit', putValidation, function(request, response){
   var requestId = parseInt(request.params.id);
   request.body.id = requestId;
-  //this checks to see if the request.body had any of the keys
-
-  //this is similar to POST passing in needed variables and a callback
-  //function that will define 'err' as either an error or null (truthy or
-  //falsey) on the db side
   productModule.editById(request.body,requestId)
     .then(function() {
-      productModule.getAll(requestId)
-      .then(function(data) {
-        response.render('products/show', {
-        product: data[0]
-        });
-      });
+    response.redirect('/products/' + request.params.id);
     })
     .catch(function(data) {
       response.send({
@@ -193,20 +157,10 @@ router.put('/:id/edit', putValidation, function(request, response){
         message: error.message
       });
     });
-  //     var putChange = productModule.getById(requestId);
-  //     return response.render('products/index', {
-  //       products: productModule.getAll()
-  //     });
-  //   }
-  // });
 });
 
 router.delete('/:id', function(request, response) {
   var requestId = parseInt(request.params.id);
-
-  //calls deleteProduct function in our db, passes ID # and cb func
-  //see other routes for explanation of err/truthy & null/falsey
-
   productModule.deleteProduct(requestId)
     .then(function() {
       response.redirect('/products');
