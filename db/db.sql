@@ -60,19 +60,19 @@ INSERT INTO authors (first_name, last_name)
 VALUES ('Big', 'Poopeypants');
 
 INSERT INTO articles (title, body, urltitle, author_id)
-VALUES ('Telepathy Made Easy', 'I can do telepathy.  You can too!  The end.', 'www.what.com', 2);
+VALUES ('Telepathy Made Easy', 'I can do telepathy.  You can too!  The end.', 'Telepathy%20Made%20Easy', 2);
 
 INSERT INTO articles (title, body, urltitle, author_id)
-VALUES ('Golf Made Easy', 'I can do golf.  You can too!  The end.', 'www.what.com', 2);
+VALUES ('Golf Made Easy', 'I can do golf.  You can too!  The end.', 'Golf%20Made%20Easy', 2);
 
 INSERT INTO articles (title, body, urltitle, author_id)
-VALUES ('Golf is really hard', 'No one can do golf!  No matter what you hear!  The end.', 'www.where.com', 1);
+VALUES ('life can be hard', 'No one can do golf!  No matter what you hear!  The end.', 'life%20can%20be%20hard', 1);
 
 INSERT INTO articles (title, body, urltitle, author_id)
-VALUES ('Telepathy is really impossible', 'No one can do it!  No matter what you hear!  The end.', 'www.where.com', 1);
+VALUES ('Ocean madness is really impossible', 'No one can do it!  No matter what you hear!  The end.', 'Ocean%20madness%20is%20really%20impossible', 1);
 
 INSERT INTO articles (title, body, urltitle, author_id)
-VALUES ('I am an expert in...nothing', 'I have no idea what the hell I am talking about.  Buy my book anyway!  The end.', 'www.when.com', 3);
+VALUES ('I am an expert in...nothing', 'I have no idea what the hell I am talking about.  Buy my book anyway!  The end.', 'I%20am%20an%20expert%20in...nothing', 3);
 
 SELECT * FROM articles;
 

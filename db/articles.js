@@ -51,15 +51,11 @@ module.exports = (function(){
   }
 
   function _getAll() {
-    return db.query("select * from articles", true);
+    return db.query("SELECT * FROM articles", true);
   }
 
   function _getById(requestId){
-    for(var i = 0 ; i < articlesArray.length ; i++){
-      if(articlesArray[i].title === requestId){
-        return articlesArray[i];
-      }
-    }
+    return db.query("SELECT articles.*, authors.first_name, authors.last_name FROM articles INNER JOIN authors ON articles.author_id = authors.id WHERE articles.id = " + requestId, true);
   }
 
   function _editByName(requestBody, callback){

@@ -20,10 +20,18 @@ router.get('/', function(request, response){
 
 router.get('/:id', function(request, response){
   var requestId = parseInt(request.params.id);
-
-  return response.render('articles/show', {
-    article: articleModule.getById(requestId)
-  });
+    articleModule.getById(requestId)
+      .then(function(data) {
+        response.render('articles/show', {
+          article: data[0]
+        });
+      })
+      .catch(function(error) {
+        response.send({
+          success: false,
+          message: error.message
+        });
+      });
 });
 
 router.get('/:id/edit', function(request, response){
