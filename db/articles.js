@@ -50,33 +50,45 @@ module.exports = (function(){
 
   function _getByTitle(requestUrlTitle){
     for(var x=0; x < articlesArray.length; x++) {
-      console.log(requestUrlTitle + 'vs' + articlesArray[x].url_title);
       if(requestUrlTitle === articlesArray[x].url_title) {
         return articlesArray[x];
       }
     }
   }
 
-  function _editByName(requestBody, callback){
+  function _editByName(requestTitle, requestBody, callback){
+    //MUST FIND THE INDEX OF requestBody.title BEFORE CHANGING IT
 
     for(var i = 0 ; i < articlesArray.length ; i++){
-      if(articlesArray[i].title === requestBody.title){
-        for(var key in requestBody){
-          if(key === 'title'){
-            articlesArray[i].title = requestBody.title;
-            articlesArray[i].urlTitle = encodeURI(requestBody.title);
-          }
-          if(key === 'author'){
-            articlesArray[i].author = requestBody.author;
-          }
-          if(key === 'body'){
-            articlesArray[i].body = requestBody.body;
-          }
-        }
+      if(articlesArray[i].title === requestTitle){
+        articlesArray[i].title = requestBody.title;
+        articlesArray[i].url_title = encodeURI(requestBody.title);
+        articlesArray[i].author = requestBody.author;
+        articlesArray[i].body = requestBody.body;
       }
     }
 
-    callback(null);
+    //
+    //
+    //
+    //
+    //
+    //     for(var key in requestBody){
+    //       console.log(articlesArray[i].title + ' vs ' + requestBody.title);
+    //       if(key === 'title'){
+    //         articlesArray[i].title = requestBody.title;
+    //         articlesArray[i].url_title = encodeURI(requestBody.title);
+    //       }
+    //       if(key === 'author'){
+    //         articlesArray[i].author = requestBody.author;
+    //       }
+    //       if(key === 'body'){
+    //         articlesArray[i].body = requestBody.body;
+    //       }
+    //     }
+    //   }
+    // }
+
   }
 
   function _deleteArticle(requestBody, callback){

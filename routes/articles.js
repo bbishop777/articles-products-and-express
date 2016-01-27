@@ -18,11 +18,11 @@ router.get('/:url_title', function(request, response){
   });
 });
 
-router.get('/:title/edit', function(request, response){
-  var requestId = (request.params.id);
+router.get('/:url_title/edit', function(request, response){
+  var requestUrlTitle = encodeURI(request.params.url_title);
 
   return response.render('articles/edit', {
-    article: articleModule.getById(requestId)
+    article: articleModule.getByTitle(requestUrlTitle)
   });
 });
 
@@ -120,22 +120,22 @@ function putValidation(request, response, next){
   next();
 }
 
-router.put('/:id/edit', putValidation, function(request, response){
-
-  articleModule.editByName(request.body, function(err){
-    if(err) {
-      return response.send({
-        success: false,
-        message: err.message
-      });
-      //falsey return from callback function
-    } else {
-      var putChange = articleModule.getById(request.body);
+router.put('/:title/edit', putValidation, function(request, response){
+  var requestTitle = request.params.title;
+  articleModule.editByName(requestTitle, request.body); // , function(err){
+  //   if(err) {
+  //     return response.send({
+  //       success: false,
+  //       message: err.message
+  //     });
+  //     //falsey return from callback function
+  //   } else {
+      //var putChange = articleModule.getByTitle(requestUrlTitle);
       return response.render('articles/index', {
         articles: articleModule.getAll()
-      });
-    }
-  });
+      //});
+    });
+  //});
 });
 
 router.delete('/:id',function(request, response){
