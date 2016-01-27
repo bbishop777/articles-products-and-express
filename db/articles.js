@@ -33,69 +33,95 @@ module.exports = (function(){
   ];
 
   function _add(articleObject, callback){
-    //here we are checking to make sure there are no duplicate values
-    //in our array
-    var filterArticlesArray = articlesArray.filter(function(article) {
-      return (article !== null);
-    });
+    // when a new article is added
+    var authorChecker = false;
 
-    for (var x = 0; x < filterArticlesArray.length; x++) {
-
-      if(articleObject.title === filterArticlesArray[x].title) {
-        return callback(new Error(': this article has already been posted'));
+    return _getAllAuthors()
+      // we need to check if the author already exists
+      //if it alredy exists
+        // throw Error
+    .then(function(data){
+      var existingAuthor=null;
+      for (var x = 0; x < data.length; x++) {
+        if(articleObject.first_name === data[x].first_name && articleObject.last_name === data[x].last_name ) {
+          existingAuthor= data[x];
+          authorChecker = true;
+        }
       }
-    }
+    })
+          //else
+            // make a new author
+    .then(function(data) {
+      if(authorChecker===false){
+        console.log(data);
+        // return db.none("INSERT INTO authors(id, first_name, last_name) values(default, $1, $2) returning id",
+        // [articleObject.first_name, articleObject.last_name]);
 
-    articlesArray.push(articleObject);
-    callback(null);
+      }
+    })
+
+    // // we need to check to see if the article already exists
+    // .then(function(){
+    //   _getAllArticles()
+    // })
+
+    //   //if it already exists - by matching both first name and last name
+    //     //don't add a new article
+    // .then(function(data) {
+    //   for (var x = 0; x < data.length; x++) {
+    //     if( articleObject.title === data[x].title ) {
+    //       throw new Error(': this article has already been posted');
+    //     }
+    //   }
+    // })
+    //   //else
+    //     //add a new article
+    // .then(function(){
+    //   return db.none("INSERT INTO articles(id, title, body, urltitle, author_id) values (default, $1, $2, $3, $4) authors.first_name, authors.last_name FROM articles INNER JOIN authors ON articles.author_id = authors.id WHERE articles.id = ",
+    //   [articleObject.title, articleObject.body, articleObject.urltitle, articleObject]);
+    // })
+
+    // //INSERT INTO with a INNER JOIN between authors and articles
+
+    // .then(function() {
+    //   return db.one("INSERT INTO authors (id, ) values(default, $1, $2, $3, $4) returning id",
+    //   [articleOject.title, articleObject.body, articleObject.urltitle, articleObject.author_id]);
+    // });
+
+    // //     .then(function() {
+    // //   return db.one("INSERT INTO articles (id, title, body, urltitle, author_id) values(default, $1, $2, $3, $4) returning id",
+    // //   [articleOject.title, articleObject.body, articleObject.urltitle, articleObject.author_id]);
+    // // });
+
   }
 
-  function _getAll() {
+  function _getAllArticles() {
     return db.query("SELECT * FROM articles", true);
+  }
+
+  function _getAllAuthors(){
+    return db.query("SELECT * FROM authors", true);
   }
 
   function _getById(requestId){
     return db.query("SELECT articles.*, authors.first_name, authors.last_name FROM articles INNER JOIN authors ON articles.author_id = authors.id WHERE articles.id = " + requestId, true);
   }
 
-  function _editByName(requestBody, callback){
-
-    for(var i = 0 ; i < articlesArray.length ; i++){
-      if(articlesArray[i].title === requestBody.title){
-        for(var key in requestBody){
-          if(key === 'title'){
-            articlesArray[i].title = requestBody.title;
-            articlesArray[i].urlTitle = encodeURI(requestBody.title);
-          }
-          if(key === 'author'){
-            articlesArray[i].author = requestBody.author;
-          }
-          if(key === 'body'){
-            articlesArray[i].body = requestBody.body;
-          }
-        }
-      }
-    }
-
-    callback(null);
+  function _editById(requestBody, callback){
+    //This checks for keys to edit in the database.  If found, values are reassigned
+    return db.result('update articles set title = $1, body = $2, first_name = $3 , last_name = $4 where id= $5', [requestBody.title, requestBody.body, requestBody.first_name, requestBody.last_name, requestBody.Id], true);
   }
 
-  function _deleteArticle(requestBody, callback){
-
-    for(var i = 0 ; i < articlesArray.length ; i++){
-      if(articlesArray[i].title === requestBody){
-        articlesArray[i] = null;
-      }
-    }
-
-    callback(null);
+  function _deleteArticle(requestId, callback){
+    return db.result("delete from articles where id = " + requestId, false);
   }
 
   return{
-    getAll:_getAll,
+    getAllArticles:_getAllArticles,
+    getAllAuthors:_getAllAuthors,
     add:_add,
     getById:_getById,
-    editByName:_editByName,
+    editById:_editById,
     deleteArticle:_deleteArticle
 
   };

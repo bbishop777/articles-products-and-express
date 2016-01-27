@@ -1,0 +1,22 @@
+extends ./layout
+
+block content
+  form#newArticleForm(method='POST')
+    ul
+      li
+        | Article Title:&nbsp
+        input(type='text', name='title')
+        br
+      li
+        | Article Author First Name:&nbsp
+        input(type='text', name='first_name')
+        br
+      li
+        | Article Author Last Name:&nbsp
+        input(type='text', name='last_name')
+        br
+      li
+        | Article Body:&nbsp
+        input(type='text', name='body')
+        br
+    input(type='submit' value='Submit Article')

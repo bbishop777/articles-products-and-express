@@ -1,9 +1,9 @@
-extends ./../layout
+extends ./layout
 
 block content
   each article in articles
     ul
-      li Product Name:&nbsp;
+      li Article Name:&nbsp;
         a(href='/articles/#{article.id}') #{article.title}
       li &nbsp;
         a(href='/articles/#{article.id}/edit') Edit
