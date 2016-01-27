@@ -22,7 +22,7 @@ var cn = {
   host: 'localhost', //default server name
   port : 5432,
   database : 'articles_n_products', //database you are connecting to.  Change this when starting project
-  user : 'bradbishop'
+  user : 'Kainoa'
 };
 
 //create a new db in memory

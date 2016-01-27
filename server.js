@@ -26,7 +26,7 @@ var cn = {
   host: 'localhost', //default server name
   port : 5432,
   database : 'has_many_blogs', //database you are connecting to.  Change this when starting project
-  user : 'bradbishop'
+  user : 'Kainoa'
 };
 
 //create a new db in memory
