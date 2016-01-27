@@ -19,7 +19,6 @@ app.use(methodOverride(function(request,response){
 }));
 
 app.use('*', function (request, response, next) {
-  console.log(typeof request.headers.dnt, 'HEEEEEEYYYY');
   if ((request.headers.hasOwnProperty('dnt')) && (request.headers.dnt === '1')) {
     return response.send({
       'error': 'sorry, we wanna track you'

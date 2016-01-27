@@ -2,28 +2,27 @@ var express = require('express');
 var fs = require('fs');
 var router = express.Router();
 //don't need ./../db jus ../db/products also no .js needed. Express knows.
-//could also capitalize productModule to make it look like a class
-var productModule = require('./../db/articles.js');
+//could also capitalize articleModule to make it look like a class
+var articleModule = require('./../db/articles.js');
 
 router.get('/', function(request, response){
   return response.render('articles/index', {
-    articles: productModule.getAll()
+    articles: articleModule.getAll()
   });
 });
 
-router.get('/:id', function(request, response){
-  var requestId = parseInt(request.params.id);
-
+router.get('/:url_title', function(request, response){
+  var requestUrlTitle = encodeURI(request.params.url_title);
   return response.render('articles/show', {
-    article: productModule.getById(requestId)
+    articles: articleModule.getByTitle(requestUrlTitle)
   });
 });
 
-router.get('/:id/edit', function(request, response){
+router.get('/:title/edit', function(request, response){
   var requestId = (request.params.id);
 
   return response.render('articles/edit', {
-    article: productModule.getById(requestId)
+    article: articleModule.getById(requestId)
   });
 });
 
@@ -62,16 +61,16 @@ router.post('/', postValidation, function(request, response){
   };
   console.log(articleObject);
 
-  productModule.add(articleObject, function(err){
+  articleModule.add(articleObject, function(err){
     if(err) {
       return response.send({
         success: false,
         message: err.message
       });
     } else {
-      var postResults = productModule.getAll();
+      var postResults = articleModule.getAll();
       return response.render('articles/index', {
-        articles: productModule.getAll()
+        articles: articleModule.getAll()
       });
     }
   });
@@ -123,7 +122,7 @@ function putValidation(request, response, next){
 
 router.put('/:id/edit', putValidation, function(request, response){
 
-  productModule.editByName(request.body, function(err){
+  articleModule.editByName(request.body, function(err){
     if(err) {
       return response.send({
         success: false,
@@ -131,9 +130,9 @@ router.put('/:id/edit', putValidation, function(request, response){
       });
       //falsey return from callback function
     } else {
-      var putChange = productModule.getById(request.body);
+      var putChange = articleModule.getById(request.body);
       return response.render('articles/index', {
-        articles: productModule.getAll()
+        articles: articleModule.getAll()
       });
     }
   });
@@ -142,7 +141,7 @@ router.put('/:id/edit', putValidation, function(request, response){
 router.delete('/:id',function(request, response){
   var requestId = request.params.id;
 
-  productModule.deleteArticle(requestId, function (err) {
+  articleModule.deleteArticle(requestId, function (err) {
     if(err) {
       return response.send({
         success: fail,
@@ -151,9 +150,9 @@ router.delete('/:id',function(request, response){
 
     } else { //if this callback function returns falsey to error then returns
       //success with what the id# now show (null)
-      //var deleteChange = productModule.getById(requestId);
+      //var deleteChange = articleModule.getById(requestId);
       return response.render('articles/index', {
-        articles: productModule.getAll()
+        articles: articleModule.getAll()
       });
     }
   });

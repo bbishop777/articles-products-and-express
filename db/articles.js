@@ -4,13 +4,13 @@ module.exports = (function(){
       title: 'The Green Sea Turtle',
       body: 'There was a Hawaiian green sea turtle that lived on the beach',
       author: 'kai',
-      urlTitle: 'The%20Green%20Sea%20Turtle'
+      url_title: 'The%20Green%20Sea%20Turtle'
     },
     {
       title: 'house of the rising sun',
       body: 'every morning starts crazy',
       author: 'salisbury',
-      url: 'house%20of%20the%20rising%20sun'
+      url_title: 'house%20of%20the%20rising%20sun'
     }
 
   ];
@@ -39,7 +39,7 @@ module.exports = (function(){
     //Jade tries to render the index page again but doesn't know what to do with
     //null
     var filterArticlesArray = articlesArray.filter(function (article) {
-      //filter goes thru each product in productArray and asks if it is 'not'
+      //filter goes thru each product in articlesArray and asks if it is 'not'
       //null. For every item that is not null it returns true.
       return (article !== null);
     });
@@ -48,10 +48,11 @@ module.exports = (function(){
     return filterArticlesArray;
   }
 
-  function _getById(requestId){
-    for(var i = 0 ; i < articlesArray.length ; i++){
-      if(articlesArray[i].title === requestId){
-        return articlesArray[i];
+  function _getByTitle(requestUrlTitle){
+    for(var x=0; x < articlesArray.length; x++) {
+      console.log(requestUrlTitle + 'vs' + articlesArray[x].url_title);
+      if(requestUrlTitle === articlesArray[x].url_title) {
+        return articlesArray[x];
       }
     }
   }
@@ -92,7 +93,7 @@ module.exports = (function(){
   return{
     getAll:_getAll,
     add:_add,
-    getById:_getById,
+    getByTitle: _getByTitle,
     editByName:_editByName,
     deleteArticle:_deleteArticle
 
