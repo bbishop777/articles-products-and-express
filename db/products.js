@@ -87,36 +87,33 @@ var db = pgp(cn);
     // var filterProdArray = productArray.filter(function(product) {
     //   return (product !== null);
     // });
-
-    var dataAll = _getAll();
-    for (var x = 0; x < dataAll.length; x++) {
-      if(productObject.name === dataAll[x].name) {
-        return callback(new Error(': this product has already been posted'));
+    //var dataAll = _getAll();
+    return _getAll()
+    .then(function(data){
+      for (var x = 0; x < data.length; x++) {
+        console.log(data[x].name, productObject.name, 'Comparing here');
+        if(productObject.name === data[x].name) {
+          throw new Error(': this product has already been posted');
+        }
       }
-    }
-    return new promise(function(resolve, reject) {
-      db.one("insert into products (id, name, price, inventory) values(default, $1, $2, $3) returning id",
-      [productObject.name, productObject.price, productObject.inventory])
-      .then()
-      .catch(function (error) {
-          console.log("ERROR:", error); // print error;
-      });
-  });
+    })
+    .then(function() {
+
+  //     // return new promise(function(resolve, reject) {
+      return db.one("insert into products (id, name, price, inventory) values(default, $1, $2, $3) returning id",
+      [productObject.name, productObject.price, productObject.inventory]);
+  //       .then(resolve)
+  //       .catch(function (reject) {
+  //           console.log("ERROR:", reject); // print error;
+  //       });
+  //     });
+    });
   }
 
   function _getAll() {
-    return new promise(function(resolve, reject) {
+    // return new promise(function(resolve, reject) {
 
-    db.query("select * from products", true)
-    .then(function (data) {
-        // success;
-        resolve( data );
-      });
-    })
-    .catch(function (error) {
-        // error;
-        reject(error);
-    });
+    return db.query("select * from products", true);
   }
     //here we are filtering out the Null in the array because when we ran
     //a Delete request it erase the object and puts null in its place.  Then

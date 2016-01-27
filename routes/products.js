@@ -89,31 +89,18 @@ router.post('/new', postValidation, function(request, response){
   //We pass in the productObject (an object we created)and a callback function which we pass in
   // 'err' as a variable that will be defined as either a new Error or as null
   // in db.
-  productModule.add(productObject, function (err) {
-    //if there is an error on the db side it will pass that error in with a message
-    //to this function.  So on the db side a 'truthy' will be returned if errors
-    if(err) { //with a truthy, this activates
-
-      //here products.js on db side encountered an error and gave us back a message
-      //which we put in our response.send below
-      return response.send({
-        success: false,
-        message: err.message
-      });
-
-      //here the db side invoked the callback function passing in null, giving a
-      //falsy activated the else below
-    } else {
-        console.log('Are you here?');
-        response.redirect('/products');
-       // productModule.getAll()
-       //  .then(function(data) {
-       //    response.render('products/index', {
-       //      products: data
-       //    });
-      }
+  productModule.add(productObject)
+  .then(function() {
+    response.redirect('/products');
+  })
+  .catch(function (error) {
+    response.send({
+    success: false,
+    message: error.message
+    });
   });
 });
+
 
 function putValidation(request, response, next){
 
