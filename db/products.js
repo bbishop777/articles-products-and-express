@@ -91,7 +91,6 @@ var db = pgp(cn);
     return _getAll()
     .then(function(data){
       for (var x = 0; x < data.length; x++) {
-        console.log(data[x].name, productObject.name, 'Comparing here');
         if(productObject.name === data[x].name) {
           throw new Error(': this product has already been posted');
         }
@@ -130,55 +129,35 @@ var db = pgp(cn);
     // return filterProdArray;
   // }
 
-  function _editById(requestBody, requestId, callback){
+  function _editById(requestBody, requestId){
 
     //Here we are checking to make sure someone has not deleted the information
     //at the position in the array making it null
-    if(productArray[requestId]  === null){
-      //if null we invoke the callback function with a truthy value to throw an error
-      return callback(new Error(': ID is Null'));
-    }
+    // if(productArray[requestId]  === null){
+    //   //if null we invoke the callback function with a truthy value to throw an error
+    //   return callback(new Error(': ID is Null'));
+    // }
 
-    //Here we are checking if PUT request ID is actually an ID in our array
-    //by looking at the length of array minus 1 (since ID's equal the position
-    //in the array)
-    if(requestId > (productArray.length-1)){
-      //if true we invoke callback function with a truthy value to throw an error
-      return callback(new Error(': ID not found'));
-    }
 
     //This checks for keys to edit in the database.  If found, values are reassigned
-    for(var key in requestBody){
-      if(key === 'name'){
-        productArray[requestBody.id].name = requestBody.name;
+    // for(var key in requestBody){
+    //   if(key === 'name'){
+      return db.result('update products set name = $1, price = $2, inventory = $3 where id= $4', [requestBody.name, requestBody.price, requestBody.inventory,requestId], true);
       }
-      if(key === 'price'){
-        productArray[requestBody.id].price = requestBody.price;
-      }
-      if(key === 'inventory'){
-        productArray[requestBody.id].inventory = requestBody.inventory;
-      }
-    }
+    //   if(key === 'price'){
+    //     db.result('update products set price= ' + requestBody.price + 'where id= '+ requestId, true);
+    //   }
+    //   if(key === 'inventory'){
+    //     db.result('update products set inventory= ' + requestBody.inventory + 'where id= '+ requestId, true);
+    //   }
+    // }
     //if passed to here, changes have been made and callback is invoked
     //with a null which is a falsey passed into callback function
-    callback(null);
-  }
+  //   callback(null);
+  // }
 
   function _getById(requestId){
-    return new promise(function(resolve, reject) {
-
-    db.query("select * from products where id = " + requestId, true)
-    .then(function (data) {
-        // success;
-        console.log(data, 'HEEEEYYy');
-        console.log(typeof data, "THeeeere!");
-        resolve( data );
-      });
-    })
-    .catch(function (error) {
-        // error;
-        reject(error);
-    });
+    return db.query("select * from products where id = " + requestId, true);
   }
 
   function _deleteProduct(requestId, callback) {

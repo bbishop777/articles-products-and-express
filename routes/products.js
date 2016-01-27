@@ -178,20 +178,27 @@ router.put('/:id/edit', putValidation, function(request, response){
   //this is similar to POST passing in needed variables and a callback
   //function that will define 'err' as either an error or null (truthy or
   //falsey) on the db side
-  productModule.editById(request.body,requestId, function(err){
-    if(err) {
-      return response.send({
+  productModule.editById(request.body,requestId)
+    .then(function() {
+      productModule.getAll(requestId)
+      .then(function(data) {
+        response.render('products/show', {
+        product: data[0]
+        });
+      });
+    })
+    .catch(function(data) {
+      response.send({
         success: false,
-        message: err.message
+        message: error.message
       });
-      //falsey return from callback function
-    } else {
-      var putChange = productModule.getById(requestId);
-      return response.render('products/index', {
-        products: productModule.getAll()
-      });
-    }
-  });
+    });
+  //     var putChange = productModule.getById(requestId);
+  //     return response.render('products/index', {
+  //       products: productModule.getAll()
+  //     });
+  //   }
+  // });
 });
 
 router.delete('/:id', function(request, response) {
@@ -202,13 +209,15 @@ router.delete('/:id', function(request, response) {
 
   productModule.deleteProduct(requestId)
     .then(function() {
-    response.redirect('/products');
+      response.redirect('/products');
     })
     .catch(function (error) {
-    response.send({
-    success: false,
-    message: error.message
+      response.send({
+      success: false,
+      message: error.message
     });
   });
 });
+
+
 module.exports = router;
