@@ -32,43 +32,6 @@ var cn = {
 //create a new db in memory
 var db = pgp(cn);
 
-// db.query("select * from users", true)
-//     .then(function (data) {
-//         // success;
-//         console.log(data);
-//     })
-//     .catch(function (error) {
-//         // error;
-//     });
-
-//sample insert
-// db.one("insert into users(id, username, first_name, last_name) values(default, $1, $2, $3) returning id",
-//     ['studmuffin8', 'Pete', 'Wingding'])
-//     .then(function (data) {
-//         console.log(data.id); // print new user id;
-//     })
-//     .catch(function (error) {
-//         console.log("ERROR:", error); // print error;
-//     });
-// //
-//     db.query("select count(*) from users", true)
-//     .then(function (data) {
-//         // success;
-//         console.log(data);
-//     })
-//     .catch(function (error) {
-//         // error;
-//     });
-//
-
-// db.result("delete from users where id = 50003", false)
-//     .then(function (result) {
-//         console.log(result.rowCount); // print how many records were deleted;
-//     })
-//     .catch(function (error) {
-//         console.log("ERROR:", reason); // print error;
-//     });
-
 var monthArry=['Jan ', 'Feb ', 'Mar ', 'Apr ', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
 // middleware

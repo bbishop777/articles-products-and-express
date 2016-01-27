@@ -35,15 +35,29 @@ router.get('/:id', function(request, response){
         response.render('products/show', {
           product: data[0]
         });
+      })
+      .catch(function(error) {
+        response.send({
+          success: false,
+          message: error.message
+        });
       });
 });
 
 router.get('/:id/edit', function(request, response) {
   var requestId = parseInt(request.params.id);
-  console.log(request.body);
-  return response.render('products/edit', {
-    product: productModule.getById(requestId)
-  });
+  productModule.getById(requestId)
+    .then(function(data) {
+      response.render('products/edit', {
+      product: data[0]
+      });
+    })
+    .catch(function(data) {
+      response.send({
+        success: false,
+        message: error.message
+      });
+    });
 });
 
 
