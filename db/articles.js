@@ -1,4 +1,21 @@
 module.exports = (function(){
+  var fs = require('fs');
+  var promise = require('bluebird');
+  var options = {
+    promiseLib: promise
+  }
+  var pgp = require('pg-promise')(options);
+
+  var cn = {
+    host: 'localhost',
+    port: 5432,
+    database: 'articles_n_products',
+    user: 'Kainoa'
+  };
+
+  var db = pgp(cn);
+
+
   var articlesArray = [
     {
       title: 'The Green Sea Turtle',
@@ -34,26 +51,11 @@ module.exports = (function(){
   }
 
   function _getAll() {
-    //here we are filtering out the Null in the array because when we ran
-    //a Delete request it erase the object and puts null in its place.  Then
-    //Jade tries to render the index page again but doesn't know what to do with
-    //null
-    var filterArticlesArray = articlesArray.filter(function (article) {
-      //filter goes thru each product in productArray and asks if it is 'not'
-      //null. For every item that is not null it returns true.
-      return (article !== null);
-    });
-    //filter puts all 'true' items in an array which is saved in line 39
-    //as filterProdArray and returned below
-    return filterArticlesArray;
+    return db.query("SELECT * FROM articles", true);
   }
 
   function _getById(requestId){
-    for(var i = 0 ; i < articlesArray.length ; i++){
-      if(articlesArray[i].title === requestId){
-        return articlesArray[i];
-      }
-    }
+    return db.query("SELECT articles.*, authors.first_name, authors.last_name FROM articles INNER JOIN authors ON articles.author_id = authors.id WHERE articles.id = " + requestId, true);
   }
 
   function _editByName(requestBody, callback){

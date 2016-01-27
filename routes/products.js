@@ -1,18 +1,23 @@
 var express = require('express');
 var fs = require('fs');
 var router = express.Router();
-//don't need ./../db jus ../db/products also no .js needed. Express knows.
 //could also capitalize productModule to make it look like a class
 var productModule = require('./../db/products.js');
-var idCounter = productModule.getAll().length - 1;
-idCounter++;
+productModule.getAll().then(function(data) {
+
+});
 
 router.get('/', function(request, response){
-  response.render('products/index', {
-    products: productModule.getAll()
-  });
-  console.log(productModule.getAll().length);
-
+  productModule.getAll()
+    .then(function(data) {
+      response.render('products/index', {
+        products: data
+      });
+    })
+    .catch(function (error) {
+      // error;
+      reject(error);
+    });
 });
 
 router.get('/new', function(request, response){
@@ -21,19 +26,34 @@ router.get('/new', function(request, response){
 
 router.get('/:id', function(request, response){
   var requestId = parseInt(request.params.id);
-  //needs return put before all response.render in routes
-  return response.render('products/show', {
-    product: productModule.getById(requestId)
-  });
-
+    productModule.getById(requestId)
+      .then(function(data) {
+        response.render('products/show', {
+          product: data[0]
+        });
+      })
+      .catch(function(error) {
+        response.send({
+          success: false,
+          message: error.message
+        });
+      });
 });
 
 router.get('/:id/edit', function(request, response) {
   var requestId = parseInt(request.params.id);
-  console.log(request.body);
-  return response.render('products/edit', {
-    product: productModule.getById(requestId)
-  });
+  productModule.getById(requestId)
+    .then(function(data) {
+      response.render('products/edit', {
+      product: data[0]
+      });
+    })
+    .catch(function(data) {
+      response.send({
+        success: false,
+        message: error.message
+      });
+    });
 });
 
 
@@ -70,60 +90,27 @@ function postValidation(request, response, next) {
 
 //here is our POST, first calls Middleware 'postValidation'
 router.post('/new', postValidation, function(request, response){
-  //After getting thru validation we buid the object to return to the
-  //database.  We also increment the counter for the next ID
   var productObject = {
     'name': request.body.name ,
     'price' : parseInt(request.body.price) ,
-    'inventory': parseInt(request.body.inventory) ,
-    'id' : idCounter
+    'inventory': parseInt(request.body.inventory)
   };
-
-
-
-  idCounter++;
-
-  //Here we call on the module we brought in from the products.js db
-  //We pass in the productObject (an object we created)and a callback function which we pass in
-  // 'err' as a variable that will be defined as either a new Error or as null
-  // in db.
-  productModule.add(productObject, function (err) {
-    //if there is an error on the db side it will pass that error in with a message
-    //to this function.  So on the db side a 'truthy' will be returned if errors
-    if(err) { //with a truthy, this activates
-
-      //here products.js on db side encountered an error and gave us back a message
-      //which we put in our response.send below
-      return response.send({
-        success: false,
-        message: err.message
-      });
-
-      //here the db side invoked the callback function passing in null, giving a
-      //falsy activated the else below
-    } else {
-      var postResults = productModule.getAll();
-      return response.render('products/index', {
-        products: productModule.getAll()
-      });
-    }
+  productModule.add(productObject)
+  .then(function() {
+    response.redirect('/products');
+  })
+  .catch(function (error) {
+    response.send({
+    success: false,
+    message: error.message
+    });
   });
 });
 
+
 function putValidation(request, response, next){
-
-  // // Here we are checking to make sure they include an ID key
-  // if(!request.body.hasOwnProperty('id')) {
-  //   return response.send(false + ': Missing ID key');
-  // }
-
-  // //Here we are checking to make sure they have a value for the the ID key
-  // if(request.body.id.length === 0) {
-  //   return response.send(false + ': Missing values for id');
-  // }
-
   for(var key in request.body){
-    //by now we have validated an ID # to edit so are checking for
+    //are checking for
     //name, price, and inventory keys. Then checking for values to
     //those keys
     if(key === 'name'){
@@ -154,61 +141,37 @@ function putValidation(request, response, next){
   if(isNaN(parseInt(request.body.inventory))){
     return response.send(false + ': inventory needs to be a number');
   }
-
-  // //Here we are checking to make sure the url ID matched ID in the client's PUT Request
-  // if(parseInt(request.params.id) !== parseInt(request.body.id)) {
-  //   return response.send(false + ': Your url ID does not match your PUT ID');
-  // }
-
-
   next();
 }
 
 router.put('/:id/edit', putValidation, function(request, response){
   var requestId = parseInt(request.params.id);
   request.body.id = requestId;
-  //this checks to see if the request.body had any of the keys
-
-  //this is similar to POST passing in needed variables and a callback
-  //function that will define 'err' as either an error or null (truthy or
-  //falsey) on the db side
-  productModule.editById(request.body,requestId, function(err){
-    if(err) {
-      return response.send({
+  productModule.editById(request.body,requestId)
+    .then(function() {
+    response.redirect('/products/' + request.params.id);
+    })
+    .catch(function(data) {
+      response.send({
         success: false,
-        message: err.message
+        message: error.message
       });
-      //falsey return from callback function
-    } else {
-      var putChange = productModule.getById(requestId);
-      return response.render('products/index', {
-        products: productModule.getAll()
-      });
-    }
-  });
+    });
 });
 
 router.delete('/:id', function(request, response) {
   var requestId = parseInt(request.params.id);
-
-  //calls deleteProduct function in our db, passes ID # and cb func
-  //see other routes for explanation of err/truthy & null/falsey
-
-  productModule.deleteProduct(requestId, function (err) {
-    if(err) {
-      return response.send({
-        success: fail,
-        message: err.message
-      });
-
-    } else { //if this callback function returns falsey to error then returns
-      //success with what the id# now show (null)
-      //var deleteChange = productModule.getById(requestId);
-      return response.render('products/index', {
-        products: productModule.getAll()
-      });
-    }
+  productModule.deleteProduct(requestId)
+    .then(function() {
+      response.redirect('/products');
+    })
+    .catch(function (error) {
+      response.send({
+      success: false,
+      message: error.message
+    });
   });
 });
+
 
 module.exports = router;

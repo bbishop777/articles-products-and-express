@@ -5,6 +5,33 @@ var arcticlesRouter = require('./routes/articles.js');
 var bodyParser = require('body-parser');
 var methodOverride = require('method-override');
 var fs = require('fs');
+//require Bluebird for promises
+var promise = require('bluebird');
+
+var options = {
+  promiseLib: promise //overiding the default promise library with Bluebird. So making sure PG Promise will use Bluebird
+};
+
+//require PG Promise allows us to use Postgresql commands in express
+//'require' returns the function in the first set of parenthises as a function.  The second set of parenthises
+//invokes this returned function with whatever is in the second set of parenthises as the argument.  This can be seen
+//with with other requires Ex:
+//var express = require('express');
+//var app = express();
+//This could be written as:
+//var express = require('express')();
+var pgp = require('pg-promise')(options); //options calls the object above setting
+//configure database connection
+var cn = {
+  host: 'localhost', //default server name
+  port : 5432,
+  database : 'has_many_blogs', //database you are connecting to.  Change this when starting project
+  user : 'Kainoa'
+};
+
+//create a new db in memory
+var db = pgp(cn);
+
 var monthArry=['Jan ', 'Feb ', 'Mar ', 'Apr ', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
 // middleware
@@ -19,7 +46,6 @@ app.use(methodOverride(function(request,response){
 }));
 
 app.use('*', function (request, response, next) {
-  console.log(typeof request.headers.dnt, 'HEEEEEEYYYY');
   if ((request.headers.hasOwnProperty('dnt')) && (request.headers.dnt === '1')) {
     return response.send({
       'error': 'sorry, we wanna track you'
