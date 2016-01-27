@@ -95,6 +95,7 @@ var db = pgp(cn);
         if(productObject.name === data[x].name) {
           throw new Error(': this product has already been posted');
         }
+
       }
     })
     .then(function() {
@@ -181,19 +182,19 @@ var db = pgp(cn);
   }
 
   function _deleteProduct(requestId, callback) {
-    //this checks to see if the id exist
-    if(requestId > (productArray.length-1)){
-      return callback(new Error(': ID not found'));
-    }
 
-    //this checks to make sure the index isn't null
-    if(productArray[requestId]  === null){
-    return callback(new Error(': ID is Null'));
-    }
-    //at this point, it erases the object at ID# index and replaces it with
-    //null.  The callback function is called with null
-    productArray[requestId] = null;
-    callback(null);
+
+    // //this checks to make sure the index isn't null
+    // if(productArray[requestId]  === null){
+    // return callback(new Error(': ID is Null'));
+    // }
+    return db.result("delete from products where id = " + requestId, false);
+//     .then(function (result) {
+//         console.log(result.rowCount); // print how many records were deleted;
+//     })
+//     .catch(function (error) {
+//         console.log("ERROR:", reason); // print error;
+//     });
   }
 
 //all the methods we are exposing/exporting on our productModule
