@@ -10,6 +10,9 @@ router.get('/', function(request, response){
     articles: articleModule.getAll()
   });
 });
+router.get('/new', function(request,response) {
+  return response.render('articles/new');
+});
 
 router.get('/:url_title', function(request, response){
   var requestUrlTitle = encodeURI(request.params.url_title);
@@ -25,6 +28,7 @@ router.get('/:url_title/edit', function(request, response){
     article: articleModule.getByTitle(requestUrlTitle)
   });
 });
+
 
 function postValidation(request, response, next){
   var postRequestValidation = ['title', 'body', 'author'];
@@ -52,14 +56,13 @@ function postValidation(request, response, next){
 }
 
 
-router.post('/', postValidation, function(request, response){
+router.post('/new', postValidation, function(request, response){
   var articleObject = {
     'title' : request.body.title,
     'body' : request.body.body,
     'author' : request.body.author,
-    'urlTitle' : encodeURI(request.body.title)
+    'url_title' : encodeURI(request.body.title)
   };
-  console.log(articleObject);
 
   articleModule.add(articleObject, function(err){
     if(err) {
@@ -68,7 +71,7 @@ router.post('/', postValidation, function(request, response){
         message: err.message
       });
     } else {
-      var postResults = articleModule.getAll();
+      //var postResults = articleModule.getAll();
       return response.render('articles/index', {
         articles: articleModule.getAll()
       });
@@ -138,10 +141,10 @@ router.put('/:title/edit', putValidation, function(request, response){
   //});
 });
 
-router.delete('/:id',function(request, response){
-  var requestId = request.params.id;
+router.delete('/:url_title',function(request, response){
+   var requestUrlTitle = encodeURI(request.params.url_title);
 
-  articleModule.deleteArticle(requestId, function (err) {
+  articleModule.deleteArticle(requestUrlTitle, function (err) {
     if(err) {
       return response.send({
         success: fail,

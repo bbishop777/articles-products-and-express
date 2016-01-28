@@ -48,19 +48,22 @@ module.exports = (function(){
     return filterArticlesArray;
   }
 
-  function _getByTitle(requestUrlTitle){
+  function _getByTitle(requestUrlTitle) {
     for(var x=0; x < articlesArray.length; x++) {
-      if(requestUrlTitle === articlesArray[x].url_title) {
+      if (articlesArray[x] === null) {
+        console.log ('This position is null');
+      } else if (requestUrlTitle === articlesArray[x].url_title) {
         return articlesArray[x];
-      }
     }
   }
+}
 
   function _editByName(requestTitle, requestBody, callback){
-    //MUST FIND THE INDEX OF requestBody.title BEFORE CHANGING IT
 
     for(var i = 0 ; i < articlesArray.length ; i++){
-      if(articlesArray[i].title === requestTitle){
+      if(articlesArray[i] === null) {
+        console.log('this name is null');
+      }else if(articlesArray[i].title === requestTitle){
         articlesArray[i].title = requestBody.title;
         articlesArray[i].url_title = encodeURI(requestBody.title);
         articlesArray[i].author = requestBody.author;
@@ -91,11 +94,12 @@ module.exports = (function(){
 
   }
 
-  function _deleteArticle(requestBody, callback){
-
+  function _deleteArticle(requestUrlTitle, callback){
     for(var i = 0 ; i < articlesArray.length ; i++){
-      if(articlesArray[i].title === requestBody){
-        articlesArray[i] = null;
+      if(articlesArray[i] !== null) {
+        if(articlesArray[i].url_title === requestUrlTitle){
+          articlesArray[i] = null;
+        }
       }
     }
 
